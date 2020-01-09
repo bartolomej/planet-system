@@ -1,5 +1,6 @@
-import "./style.css"
-import { sayHello } from "./test";
+window.addEventListener('load', () => console.log('loaded!'));
 
-
-window.addEventListener('load', sayHello);
+/**
+ * TODO: generate planets on mouse click
+ * TODO: show grid
+ */
