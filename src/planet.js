@@ -11,13 +11,38 @@ export default class Planet {
     this.mass = mass ? mass : 1;
     this.position = Vector.is(position) ? position : new Vector();
     this.velocity = Vector.is(velocity) ? velocity : new Vector();
+    this.path = [];
+  }
+
+  draw (ctx) {
+    if (window.showPath) {
+      ctx.beginPath();
+      ctx.fillStyle = "#d9d9d9";
+      for (let position of this.path) {
+        ctx.moveTo(position.x , position.y);
+        ctx.arc(position.x, position.y, 2, 0, 2 * Math.PI);
+      }
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    ctx.beginPath();
+    ctx.fillStyle = "#000000";
+    ctx.arc(this.position.x, this.position.y, this.mass, 0, 2 * Math.PI);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
   }
 
   update (planets) {
     for (let planet of planets) {
       this.velocity = this.velocity.add(this.getAcceleration(planet));
     }
-    this.position = this.position.add(this.velocity);
+    this.position = this.position.add(this.velocity.dot(window.S));
+    this.path.push(this.position);
+    if (this.path.length > 100) {
+      this.path.splice(0, 1)
+    }
   }
 
   getAcceleration (planet) {
@@ -27,7 +52,8 @@ export default class Planet {
   }
 
   getForce (planet) {
-    return planet.mass * this.mass / Math.sqrt(this.position.dist(planet.position));
+    let G = window.G ? window.G : 1;
+    return G * planet.mass * this.mass / Math.sqrt(this.position.dist(planet.position));
   }
 
 }

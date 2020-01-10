@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Personal website with projects, blogs and ideas.">
+    <meta name="description" content="Planet simulation">
     <meta name="author" content="Bartolomej Kozorog">
 
     <!-- OG Meta Tags to improve the way the post looks when you share the page on LinkedIn, Facebook, Google+ -->
@@ -17,25 +17,30 @@
     <meta property="og:url" content=""/> <!-- where do you want your post to link to -->
     <meta property="og:type" content="article"/>
 
-    <title>Simple front end starter template</title>
+    <title>Planet simulation</title>
 
-    <link rel="icon" href="assets/images/drawing.svg">
-    <link rel="stylesheet" href="bundle.js.css">
+    <link type="text/css" rel="stylesheet" href="bundle.js.css">
     <link rel="icon" href="icon.png">
 </head>
 <body>
 
-<div>
-    <h1>Front end starter template</h1>
+<div id="controls">
     <div>
-        <p>Basic template for modern front end web development.</p>
-        <p>Supporting:</p>
-        <ul>
-            <li>ES6 syntax</li>
-            <li>JS + CSS code bundling</li>
-            <li>Testing</li>
-        </ul>
+        <label for="planets-number">Planets</label><input id="planets-number" type="number"/>
     </div>
+    <div>
+        <label for="G-number">G</label><input id="G-number" type="number"/>
+    </div>
+    <div>
+        <label for="speed-number">Speed</label><input id="speed-number" type="number"/>
+    </div>
+    <div>
+        <label for="show-path">Show path</label><input id="show-path" type="checkbox">
+    </div>
+</div>
+
+<div id="container">
+    <canvas id="sketch"></canvas>
 </div>
 
 <script src="./bundle.js"></script>
