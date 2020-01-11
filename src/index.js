@@ -1,88 +1,75 @@
-import Planet from "./planet";
-import Vector from "./vector";
 import "./style.css"
+import Simulation from "./simulation";
 
-window.addEventListener('load', onLoadHandler);
-window.addEventListener('resize', adjustSize);
-getById('G-number').addEventListener('input', rerender);
-getById('speed-number').addEventListener('input', rerender);
-getById('planets-number').addEventListener('input', rerender);
-getById('show-path').addEventListener('input', rerender);
+// TODO: zoom in/out feature
 
-/**
- * TODO: generate planets on mouse click
- * TODO: show grid
- */
+window.addEventListener('load', onLoad);
+getById('open-menu').addEventListener('click', openMenu);
+getById('start-simulation').addEventListener('click', startSimulation);
 
-let ctx;
-let canvas;
-let animation;
-let planets = [];
+// params input change events
+getById('gravity-const').addEventListener('input', onInputChange);
+getById('speed-const').addEventListener('input', onInputChange);
+getById('planets-count').addEventListener('input', onInputChange);
+getById('show-path').addEventListener('input', onShowPathChange);
 
-function adjustSize () {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+function onLoad () {
+  openMenu();
+  updateViewElements();
+  startSimulation();
 }
 
-function onLoadHandler () {
-  window.G = 0.002;
-  window.S = 0.1;
-  window.showPath = true;
-  window.planets = 10;
-  getById('G-number').value = window.G;
-  getById('speed-number').value = window.S;
-  getById('planets-number').value = window.planets;
-  getById('show-path').checked = window.showPath;
-  canvas = document.getElementById('sketch');
-  adjustSize();
-  ctx = canvas.getContext('2d');
-  init();
-  animation = requestAnimationFrame(simulate);
+let simulation = null;
+let params = {
+  speedC: 0.1,
+  gravityC: 0.002,
+  showPath: true,
+  planetsCount: 10,
+};
+
+function onInputChange () {
+  let planetsCInput = Number.parseFloat(getById('planets-count').value);
+  if (!isNaN(planetsCInput)) params.planetsCount = planetsCInput;
+
+  let gravityCInput = Number.parseFloat(getById('gravity-const').value);
+  if (!isNaN(gravityCInput)) params.gravityC = gravityCInput;
+
+  let speedCInput = Number.parseFloat(getById('speed-const').value);
+  if (!isNaN(speedCInput)) params.speedC = speedCInput;
+
+  params.showPath = getById('show-path').checked;
+
+  startSimulation();
 }
 
-function rerender () {
-  let planets = Number.parseFloat(getById('planets-number').value);
-  if (!isNaN(planets)) {
-    window.planets = planets;
-    getById('planets-number').value = window.planets;
-  }
-  let G = Number.parseFloat(getById('G-number').value);
-  if (!isNaN(G)) {
-    window.G = G;
-    getById('G-number').value = window.G;
-  }
-  let S = Number.parseFloat(getById('speed-number').value);
-  if (!isNaN(S)) {
-    window.S = S;
-    getById('speed-number').value = window.S;
-  }
-  window.showPath = getById('show-path').checked;
-  cancelAnimationFrame(animation);
-  init();
-  animation = requestAnimationFrame(simulate);
+function onShowPathChange () {
+  // if show-path input changes don't reinitialize simulation
+  params.showPath = getById('show-path').checked;
+  simulation.params.showPath = params.showPath;
 }
 
-function init () {
-  planets = [];
-  for (let i = 0; i < window.planets; i++) {
-    planets.push(new Planet(
-      Math.random() * 10,
-      new Vector(
-        Math.random() * canvas.width,
-        Math.random() * canvas.height
-      )
-    ))
+function startSimulation () {
+  if (simulation) {
+    simulation.destroy();
+    simulation = new Simulation(params);
+    simulation.start();
+  } else {
+    simulation = new Simulation(params);
+    simulation.start();
   }
 }
 
-function simulate () {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  for (let i = 0; i < planets.length; i++) {
-    let other = [...planets.slice(0, i - 1), ...planets.slice(i, planets.length)];
-    planets[i].update(other);
-    planets[i].draw(ctx);
-  }
-  requestAnimationFrame(simulate);
+function updateViewElements () {
+  getById('gravity-const').value = params.gravityC;
+  getById('speed-const').value = params.speedC;
+  getById('planets-count').value = params.planetsCount;
+  getById('show-path').checked = params.showPath;
+}
+
+function openMenu () {
+  $("#intro-modal").modal({
+    fadeDuration: 100
+  });
 }
 
 function getById (id) {

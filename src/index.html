@@ -26,23 +26,38 @@
 
 <div id="controls">
     <div>
-        <label for="planets-number">Planets</label><input id="planets-number" type="number"/>
+        <label for="planets-count">Initial planets</label><input id="planets-count" type="number"/>
     </div>
     <div>
-        <label for="G-number">G</label><input id="G-number" type="number"/>
+        <label for="gravity-const">Gravitational constant</label><input id="gravity-const" step="0.001" type="number"/>
     </div>
     <div>
-        <label for="speed-number">Speed</label><input id="speed-number" type="number"/>
+        <label for="speed-const">Speed constant</label><input id="speed-const" step="0.1" type="number"/>
     </div>
     <div>
-        <label for="show-path">Show path</label><input id="show-path" type="checkbox">
+        <label for="show-path">Show planet path</label><input id="show-path" type="checkbox">
     </div>
+    <button id="start-simulation">SIMULATE</button>
 </div>
+
+<button id="open-menu">MENU</button>
 
 <div id="container">
     <canvas id="sketch"></canvas>
 </div>
 
+
+<div id="intro-modal" class="modal">
+    <h2>Planetary system</h2>
+    <p>Feel free to play around with some parameters and see how system will behave.</p>
+    <p>You can draw new planets by clicking and dragging to adjust planet initial speed vector.</p>
+    <p>Gravitational forces are calculated with Newton's gravitational attraction equation. <img src="gravity-equation.svg" /></p>
+</div>
+
+<!-- jQuery Modal -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-modal/0.9.1/jquery.modal.min.css" />
 <script src="./bundle.js"></script>
 </body>
 </html>
