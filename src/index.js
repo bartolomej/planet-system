@@ -1,23 +1,7 @@
 import "./style.css"
 import Simulation from "./simulation";
 
-// TODO: zoom in/out feature
-
-window.addEventListener('load', onLoad);
-getById('open-menu').addEventListener('click', openMenu);
-getById('start-simulation').addEventListener('click', startSimulation);
-
-// params input change events
-getById('gravity-const').addEventListener('input', onInputChange);
-getById('speed-const').addEventListener('input', onInputChange);
-getById('planets-count').addEventListener('input', onInputChange);
-getById('show-path').addEventListener('input', onShowPathChange);
-
-function onLoad () {
-  openMenu();
-  updateViewElements();
-  startSimulation();
-}
+// TODO: implement stable orbits examples: https://math.stackexchange.com/questions/1613765/simple-stable-n-body-orbits-in-the-plane-with-some-fixed-bodies-allowed
 
 let simulation = null;
 let params = {
@@ -27,6 +11,25 @@ let params = {
   planetsCount: 10,
 };
 
+window.addEventListener('load', onLoad);
+getById('open-menu').addEventListener('click', openMenu);
+getById('start-simulation').addEventListener('click', startSimulation);
+
+// params input change events
+getById('gravity-const').addEventListener('input', onInputChange);
+getById('speed-const').addEventListener('input', onSpeedChange);
+getById('planets-count').addEventListener('input', onInputChange);
+getById('show-path').addEventListener('input', onShowPathChange);
+getById('show-v-vectors').addEventListener('input', onShowVelocityVectorsChange);
+getById('show-a-vectors').addEventListener('input', onShowAccVectorsChange);
+
+function onLoad () {
+  openMenu();
+  updateViewElements();
+  startSimulation();
+}
+
+
 function onInputChange () {
   let planetsCInput = Number.parseFloat(getById('planets-count').value);
   if (!isNaN(planetsCInput)) params.planetsCount = planetsCInput;
@@ -34,18 +37,31 @@ function onInputChange () {
   let gravityCInput = Number.parseFloat(getById('gravity-const').value);
   if (!isNaN(gravityCInput)) params.gravityC = gravityCInput;
 
-  let speedCInput = Number.parseFloat(getById('speed-const').value);
-  if (!isNaN(speedCInput)) params.speedC = speedCInput;
-
   params.showPath = getById('show-path').checked;
 
   startSimulation();
+}
+
+function onSpeedChange () {
+  let speedCInput = Number.parseFloat(getById('speed-const').value);
+  if (!isNaN(speedCInput)) params.speedC = speedCInput;
+  simulation.params.speedC = params.speedC;
 }
 
 function onShowPathChange () {
   // if show-path input changes don't reinitialize simulation
   params.showPath = getById('show-path').checked;
   simulation.params.showPath = params.showPath;
+}
+
+function onShowVelocityVectorsChange () {
+  params.showVelocityVectors = getById('show-v-vectors').checked;
+  simulation.params.showVelocityVectors = params.showVelocityVectors;
+}
+
+function onShowAccVectorsChange () {
+  params.showAccVectors = getById('show-a-vectors').checked;
+  simulation.params.showAccVectors = params.showAccVectors;
 }
 
 function startSimulation () {

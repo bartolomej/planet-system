@@ -13,13 +13,22 @@ export default class Planet {
     this.mass = mass ? mass : 1;
     this.position = Vector.is(position) ? position : new Vector();
     this.velocity = Vector.is(velocity) ? velocity : new Vector();
+    this.acceleration = new Vector();
+    this.c = `rgba(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255}, x)`;
     this.path = [];
+    this.tick = 0;
   }
 
-  draw (ctx, showPath = true) {
+  color (opacity) {
+    return this.c.replace('x', opacity);
+  }
+
+  draw (ctx, showPath = true, showVVectors, showAVectors) {
+
     if (showPath) {
       ctx.beginPath();
-      ctx.fillStyle = "#d9d9d9";
+      ctx.strokeStyle = "rgba(1, 1, 1, 0)";
+      ctx.fillStyle = this.color(0.6);
       for (let position of this.path) {
         ctx.moveTo(position.x , position.y);
         ctx.arc(position.x, position.y, 2, 0, 2 * Math.PI);
@@ -28,21 +37,42 @@ export default class Planet {
       ctx.fill();
     }
 
+    if (showVVectors) {
+      ctx.strokeStyle = "#FF0000";
+      ctx.beginPath();
+      ctx.moveTo(this.position.x, this.position.y);
+      ctx.lineTo(this.position.x + this.velocity.x, this.position.y + this.velocity.y);
+      ctx.closePath();
+      ctx.stroke();
+    }
+    if (showAVectors) {
+      ctx.strokeStyle = "#0012ff";
+      ctx.beginPath();
+      ctx.moveTo(this.position.x, this.position.y);
+      ctx.lineTo(this.position.x + this.acceleration.x * 100, this.position.y + this.acceleration.y * 100);
+      ctx.closePath();
+      ctx.stroke();
+    }
+
     ctx.beginPath();
-    ctx.fillStyle = "#000000";
-    ctx.arc(this.position.x, this.position.y, this.mass, 0, 2 * Math.PI);
+    ctx.fillStyle = this.color(1);
+    ctx.arc(this.position.x, this.position.y, this.mass * 2, 0, 2 * Math.PI);
     ctx.closePath();
     ctx.fill();
-    ctx.stroke();
+
+    this.tick++;
   }
 
-  update (planets) {
+  update (planets, speedC) {
     for (let planet of planets) {
-      this.velocity = this.velocity.add(this.getAcceleration(planet));
+      this.acceleration = this.getAcceleration(planet);
+      this.velocity = this.velocity.add(this.acceleration);
     }
-    this.position = this.position.add(this.velocity.dot(this.params.speedC));
-    this.path.push(this.position);
-    if (this.path.length > 100) {
+    this.position = this.position.add(this.velocity.dot(speedC));
+    if (this.tick % 4 === 0) {
+      this.path.push(this.position);
+    }
+    if (this.path.length > 150) {
       this.path.splice(0, 1)
     }
   }

@@ -26,21 +26,44 @@
 
 <div id="controls">
     <div>
-        <label for="planets-count">Initial planets</label><input id="planets-count" type="number"/>
+        <label for="planets-count">Initial planets</label>
+        <input id="planets-count" type="number"/>
     </div>
     <div>
-        <label for="gravity-const">Gravitational constant</label><input id="gravity-const" step="0.001" type="number"/>
+        <label for="gravity-const">Gravitational constant</label>
+        <input id="gravity-const" step="0.001" type="number"/>
     </div>
     <div>
-        <label for="speed-const">Speed constant</label><input id="speed-const" step="0.1" type="number"/>
+        <label for="speed-const">Simulation speed</label>
+        <input id="speed-const" step="0.1" type="number"/>
     </div>
-    <div>
-        <label for="show-path">Show planet path</label><input id="show-path" type="checkbox">
+    <div style="flex-direction: row;">
+        <label for="show-path">Show planet path</label>
+        <input id="show-path" type="checkbox">
+    </div>
+    <div style="flex-direction: row;">
+        <label for="show-v-vectors">Show velocity vectors</label>
+        <input id="show-v-vectors" type="checkbox">
+    </div>
+    <div style="flex-direction: row;">
+        <label for="show-a-vectors">Show acceleration vectors</label>
+        <input id="show-a-vectors" type="checkbox">
     </div>
     <button id="start-simulation">SIMULATE</button>
 </div>
 
 <button id="open-menu">MENU</button>
+
+<div id="zoom-container">
+    <div class="round-controls-group">
+        <button id="move-mode"><img src="move.svg"/></button>
+        <button id="create-mode"><img src="world.svg"/></button>
+    </div>
+    <div class="round-controls-group">
+        <button id="zoom-in">+</button>
+        <button id="zoom-out">-</button>
+    </div>
+</div>
 
 <div id="container">
     <canvas id="sketch"></canvas>
