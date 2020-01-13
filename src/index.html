@@ -5,19 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Planetary system simulation">
+    <meta name="description" content="Planetary system simulation 🌎 🌔">
     <meta name="author" content="Bartolomej Kozorog">
 
     <!-- OG Meta Tags to improve the way the post looks when you share the page on LinkedIn, Facebook, Google+ -->
-    <meta property="og:site_name" content="Planetary system simulation"/> <!-- website name -->
+    <meta property="og:site_name" content="Planetary system simulation 🌎 🌔"/> <!-- website name -->
     <meta property="og:site" content="https://www.bartolomej.github.io/planet-system"/> <!-- website link -->
-    <meta property="og:title" content="Planetary system simulation"/> <!-- title shown in the actual shared post -->
-    <meta property="og:description" content="Create new planets, play with the simulation parameters..."/> <!-- description shown in the actual shared post -->
-    <meta property="og:image" content="world.png"/> <!-- image link, make sure it's jpg -->
+    <meta property="og:title" content="Planetary system simulation 🌎 🌔"/> <!-- title shown in the actual shared post -->
+    <meta property="og:description" content="Have fun creating systems of planets with all kinds of interesting orbiting behaviours 🌎 🌔"/> <!-- description shown in the actual shared post -->
+    <meta property="og:image" content="planet-system.png"/> <!-- image link, make sure it's jpg -->
     <meta property="og:url" content=""/> <!-- where do you want your post to link to -->
     <meta property="og:type" content="article"/>
 
-    <title>Planetary system simulation</title>
+    <title>Planetary System Simulation</title>
 
     <link type="text/css" rel="stylesheet" href="bundle.js.css">
     <link rel="icon" href="favicon.ico">
@@ -31,40 +31,32 @@
     </div>
     <div>
         <label for="gravity-const">Gravitational constant</label>
-        <input id="gravity-const" step="0.001" type="number"/>
+        <input id="gravity-const" step="0.0002" type="number"/>
     </div>
     <div>
         <label for="speed-const">Simulation speed</label>
         <input id="speed-const" step="0.1" type="number"/>
     </div>
-    <div style="flex-direction: row;">
-        <label for="show-path">Show planet path</label>
-        <input id="show-path" type="checkbox">
-    </div>
-    <div style="flex-direction: row;">
-        <label for="show-v-vectors">Show velocity vectors</label>
-        <input id="show-v-vectors" type="checkbox">
-    </div>
-    <div style="flex-direction: row;">
-        <label for="show-a-vectors">Show acceleration vectors</label>
-        <input id="show-a-vectors" type="checkbox">
-    </div>
-    <button id="start-simulation">SIMULATE</button>
+    <button style="margin-top: 8px" id="start-simulation">GO!</button>
 </div>
 
-<button id="open-menu">MENU</button>
+<button id="open-menu" style="padding: 8px; font-size: 13px">MENU</button>
 
 <div id="zoom-container">
     <div class="round-controls-group">
-        <button id="lock-position"><img src="lock.svg"/></button>
+        <button id="show-path"><img src="orbit.svg"/></button>
+    </div>
+    <div class="round-controls-group">
+        <button id="show-v-vectors"><img style="transform: rotate(40deg)" src="arrow-v.svg"/></button>
+        <button id="show-a-vectors"><img style="transform: rotate(-40deg)" src="arrow-a.svg"/></button>
     </div>
     <div class="round-controls-group">
         <button id="move-mode"><img src="move.svg"/></button>
         <button id="create-mode"><img src="world.svg"/></button>
     </div>
     <div class="round-controls-group">
-        <button id="zoom-in">+</button>
-        <button id="zoom-out">-</button>
+        <button id="zoom-in"><img src="zoom-in.svg"/></button>
+        <button id="zoom-out"><img src="zoom-out.svg"/></button>
     </div>
 </div>
 
@@ -74,17 +66,29 @@
 
 
 <div id="intro-modal" class="modal">
-    <h2>🌔 Planetary system simulation 🌎</h2>
+    <div>
+        <h2>🌔 Quick tutorial 🌎</h2>
+        <ul>
+            <li>Show planet path <img src="orbit.svg"/></li>
+            <li>Show velocity vectors <img style="transform: rotate(40deg)" src="arrow-v.svg"/></li>
+            <li>Show acceleration vectors <img style="transform: rotate(-40deg)" src="arrow-a.svg"/></li>
+            <li>Toggle to move around with your mouse <img src="move.svg"/></li>
+            <li>Toggle to new planets with initial speed vector <img src="world.svg"/></li>
+            <li>Click <img src="zoom-in.svg"/> or <img src="zoom-out.svg"/> for zoom</li>
+        </ul>
+    </div>
     <br>
-    <p>Gravitational forces are calculated with Newton's gravitational attraction equation.</p>
-    <img style="width: unset; display: block; margin: auto" src="gravity-equation.svg" />
+    <div>
+        <h2>🔍 Relevant links 📖</h2>
+        <ul>
+            <li>Newton's law of gravity - <a target="_blank" href="https://en.wikipedia.org/wiki/Gravity#Newton's_theory_of_gravitation">wiki</a></li>
+            <li>3 body problem - <a target="_blank" href="https://www.youtube.com/watch?v=eqSPvyaxMI8&t=95s">David Gozzard</a></li>
+            <li>N body problem - <a target="_blank" href="https://en.wikipedia.org/wiki/N-body_problem">wiki</a></li>
+            <li>Vectors (linear algebra) - <a target="_blank" href="https://www.youtube.com/watch?v=fNk_zzaMoSs">3blue1brow</a></li>
+        </ul>
+    </div>
     <br>
-    <p>You can create new planets by clicking <img src="world.svg"/>, then drag mouse to adjust initial planet speed vector.</p>
-    <p>Click <img src="move.svg"/> to move around the environment with your mouse.</p>
-    <p>Lock screen position to average center of mass by clicking <img src="lock.svg"/> button.</p>
-    <br>
-    <p>Feel free to play around with some parameters and see how system will behave. 🤗</p>
-
+    <p style="text-align: center">Also check out my <a target="_blank" href="https://github.com/bartolomej">GitHub profile</a> 🙌</p>
 </div>
 
 <!-- jQuery Modal -->

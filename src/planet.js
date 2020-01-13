@@ -38,20 +38,20 @@ export default class Planet {
     }
 
     if (showVVectors) {
-      ctx.strokeStyle = "#FF0000";
-      ctx.beginPath();
-      ctx.moveTo(this.position.x, this.position.y);
-      ctx.lineTo(this.position.x + this.velocity.x, this.position.y + this.velocity.y);
-      ctx.closePath();
-      ctx.stroke();
+      this._drawVector(ctx, "#FF0000",
+        this.position.x,
+        this.position.y,
+        this.position.x + this.velocity.x,
+        this.position.y + this.velocity.y
+      );
     }
     if (showAVectors) {
-      ctx.strokeStyle = "#0012ff";
-      ctx.beginPath();
-      ctx.moveTo(this.position.x, this.position.y);
-      ctx.lineTo(this.position.x + this.acceleration.x * 100, this.position.y + this.acceleration.y * 100);
-      ctx.closePath();
-      ctx.stroke();
+      this._drawVector(ctx, "#0012ff",
+        this.position.x,
+        this.position.y,
+        this.position.x + this.acceleration.x * 150,
+        this.position.y + this.acceleration.y * 150
+      );
     }
 
     ctx.beginPath();
@@ -61,6 +61,31 @@ export default class Planet {
     ctx.fill();
 
     this.tick++;
+  }
+
+  _drawVector (ctx, color, x0, y0, x1, y1) {
+    const s = 3;
+    const w = 0.4;
+    let dx = x1 - x0;
+    let dy = y1 - y0;
+    let a = Math.atan(dy / dx);
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = s;
+    ctx.beginPath();
+    ctx.moveTo(x0, y0);
+    ctx.lineTo(x1, y1);
+    ctx.moveTo(x1, y1);
+    if (dx < 0) {
+      ctx.lineTo(x1 + Math.cos(a - w) * s, y1 + Math.sin(a - w) * s);
+      ctx.lineTo(x1 + Math.cos(a + w) * s, y1 + Math.sin(a + w) * s);
+    } else {
+      ctx.lineTo(x1 - Math.cos(a - w) * s, y1 - Math.sin(a - w) * s);
+      ctx.lineTo(x1 - Math.cos(a + w) * s, y1 - Math.sin(a + w) * s);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
   }
 
   update (planets, speedC) {

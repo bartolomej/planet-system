@@ -15,12 +15,13 @@ export default class Simulation {
     this.params = params;
     this.scale = 1;
     this.spanX = 500;
+    this.showVelocityVectors = true;
+    this.showAccVectors = false;
+    this.showPath = true;
     this.editMode = EDIT_MODES.MOVE;
     this._initViewElements();
     // translation state
     this.translate = { x: 0, y: 0 };
-    this.lockPosition = true;
-    this.alert = null;
     // zoom state
     this.isZoomingIn = false;
     this.isZoomingOut = false;
@@ -36,62 +37,40 @@ export default class Simulation {
     addListener('sketch', 'mousedown', this._onMouseDown, this);
     addListener('sketch', 'mouseup', this._onMouseUp, this);
     // zoom out/in buttons events
-    addListener('zoom-in', 'mousedown', this._setZoomIn, this);
-    addListener('zoom-in', 'mouseup', this._setZoomIn, this);
-    addListener('zoom-out', 'mousedown', this._setZoomOut, this);
-    addListener('zoom-out', 'mouseup', this._setZoomOut, this);
+    addListener('zoom-in', 'mousedown', this._onZoomIn, this);
+    addListener('zoom-in', 'mouseup', this._onZoomIn, this);
+    addListener('zoom-out', 'mousedown', this._onZoomOut, this);
+    addListener('zoom-out', 'mouseup', this._onZoomOut, this);
     addListener('create-mode', 'click', this._onPlanetCreate, this);
     addListener('move-mode', 'click', this._onMoveMode, this);
-    addListener('lock-position', 'click', this._onPositionLock, this);
+    addListener('show-path', 'click', this._onShowPath, this);
+    addListener('show-v-vectors', 'click', this._onShowVVectors, this);
+    addListener('show-a-vectors', 'click', this._onShowAVectors, this);
     window.addEventListener('mousemove', this._onMouseMove.bind(this));
     window.addEventListener('resize', this._resizeCanvas.bind(this));
   }
 
-  _setZoomIn () {
+  _onZoomIn () {
     this.isZoomingIn = !this.isZoomingIn;
   }
 
-  _setZoomOut () {
+  _onZoomOut () {
     this.isZoomingOut = !this.isZoomingOut;
   }
 
-  _getScaleX () {
-    return (this.canvas.width / this.spanX) * this.scale;
+  _onShowPath (e) {
+    invertSelect('show-path');
+    this.showPath = !this.showPath;
   }
 
-  _getScaleY () {
-    return this._getScaleX();
+  _onShowVVectors () {
+    invertSelect('show-v-vectors');
+    this.showVelocityVectors = !this.showVelocityVectors;
   }
 
-  _getSpanX () {
-    return this.spanX;
-  }
-
-  _getSpanY () {
-    return this.canvas.height / this.canvas.width * this._getSpanX();
-  }
-
-  _initViewElements () {
-    let create = document.getElementById('create-mode');
-    let move = document.getElementById('move-mode');
-    let lock = document.getElementById('lock-position');
-
-    if (!lock.classList.contains('selected')) {
-      lock.classList.add('selected');
-    }
-    if (create.classList.contains('selected')) {
-      create.classList.remove('selected');
-    }
-    if (!move.classList.contains('selected')) {
-      move.classList.add('selected')
-    }
-
-    document.getElementById('container').style.cursor = 'grab';
-  }
-
-  _onPositionLock () {
-    invertSelect('lock-position');
-    this.lockPosition = !this.lockPosition;
+  _onShowAVectors () {
+    invertSelect('show-a-vectors');
+    this.showAccVectors = !this.showAccVectors;
   }
 
   _onPlanetCreate () {
@@ -164,9 +143,39 @@ export default class Simulation {
     this.lastDraw = { START: { x: 0, y: 0 }, END: { x: 0, y: 0 } }
   }
 
+  _initViewElements () {
+    let create = document.getElementById('create-mode');
+    let move = document.getElementById('move-mode');
+    let showPath = document.getElementById('show-path');
+    let showVVectors = document.getElementById('show-v-vectors');
+
+    if (!showVVectors.classList.contains('selected')) {
+      showVVectors.classList.add('selected');
+    }
+    if (!showPath.classList.contains('selected')) {
+      showPath.classList.add('selected');
+    }
+    if (create.classList.contains('selected')) {
+      create.classList.remove('selected');
+    }
+    if (!move.classList.contains('selected')) {
+      move.classList.add('selected')
+    }
+
+    document.getElementById('container').style.cursor = 'grab';
+  }
+
   _resizeCanvas () {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
+  }
+
+  _getScaleX () {
+    return (this.canvas.width / this.spanX) * this.scale;
+  }
+
+  _getScaleY () {
+    return this._getScaleX();
   }
 
   _calculateMassCenter () {
@@ -208,29 +217,52 @@ export default class Simulation {
     this.ctx.scale(this._getScaleX(), this._getScaleY());
     this.ctx.translate(this.translate.x, this.translate.y);
 
-    if (this.lockPosition) {
-      const massCenter = this._calculateMassCenter();
-      this.ctx.translate(-massCenter.x, -massCenter.y);
-    }
+    const massCenter = this._calculateMassCenter();
+    this.ctx.translate(-massCenter.x, -massCenter.y);
 
     for (let i = 0; i < this.planets.length; i++) {
       let other = [...this.planets.slice(0, i - 1), ...this.planets.slice(i, this.planets.length)];
       this.planets[i].update(other, this.params.speedC);
-      this.planets[i].draw(this.ctx, this.params.showPath, this.params.showVelocityVectors, this.params.showAccVectors);
+      this.planets[i].draw(this.ctx, this.showPath, this.showVelocityVectors, this.showAccVectors);
     }
     this.ctx.restore();
 
-    // draw velocity vector
-    this.ctx.beginPath();
-    this.ctx.moveTo(this.lastDraw.START.x, this.lastDraw.START.y);
-    this.ctx.lineTo(this.lastDraw.END.x, this.lastDraw.END.y);
-    this.ctx.closePath();
-    this.ctx.stroke();
+    this._drawVelocityVector(
+      this.lastDraw.START.x,
+      this.lastDraw.START.y,
+      this.lastDraw.END.x,
+      this.lastDraw.END.y
+    );
 
     if (this.isZoomingIn) this.scale += 0.005;
     if (this.isZoomingOut && this.scale > 0) this.scale -= 0.005;
 
     requestAnimationFrame(this._simulate.bind(this));
+  }
+
+  _drawVelocityVector (x0, y0, x1, y1) {
+    const s = 7;
+    const w = 0.7;
+    let dx = x1 - x0;
+    let dy = y1 - y0;
+    let a = Math.atan(dy / dx);
+    this.ctx.strokeStyle = 'black';
+    this.ctx.fillStyle = 'black';
+    this.ctx.lineWidth = s;
+    this.ctx.beginPath();
+    this.ctx.moveTo(x0, y0);
+    this.ctx.lineTo(x1, y1);
+    this.ctx.moveTo(x1, y1);
+    if (dx < 0) {
+      this.ctx.lineTo(x1 + Math.cos(a - w) * s, y1 + Math.sin(a - w) * s);
+      this.ctx.lineTo(x1 + Math.cos(a + w) * s, y1 + Math.sin(a + w) * s);
+    } else {
+      this.ctx.lineTo(x1 - Math.cos(a - w) * s, y1 - Math.sin(a - w) * s);
+      this.ctx.lineTo(x1 - Math.cos(a + w) * s, y1 - Math.sin(a + w) * s);
+    }
+    this.ctx.closePath();
+    this.ctx.fill();
+    this.ctx.stroke();
   }
 
 }

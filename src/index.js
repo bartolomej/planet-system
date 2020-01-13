@@ -6,8 +6,7 @@ import Simulation from "./simulation";
 let simulation = null;
 let params = {
   speedC: 0.1,
-  gravityC: 0.002,
-  showPath: true,
+  gravityC: 0.0004,
   planetsCount: 10,
 };
 
@@ -19,16 +18,12 @@ getById('start-simulation').addEventListener('click', startSimulation);
 getById('gravity-const').addEventListener('input', onInputChange);
 getById('speed-const').addEventListener('input', onSpeedChange);
 getById('planets-count').addEventListener('input', onInputChange);
-getById('show-path').addEventListener('input', onShowPathChange);
-getById('show-v-vectors').addEventListener('input', onShowVelocityVectorsChange);
-getById('show-a-vectors').addEventListener('input', onShowAccVectorsChange);
 
 function onLoad () {
   openMenu();
   updateViewElements();
   startSimulation();
 }
-
 
 function onInputChange () {
   let planetsCInput = Number.parseFloat(getById('planets-count').value);
@@ -37,8 +32,6 @@ function onInputChange () {
   let gravityCInput = Number.parseFloat(getById('gravity-const').value);
   if (!isNaN(gravityCInput)) params.gravityC = gravityCInput;
 
-  params.showPath = getById('show-path').checked;
-
   startSimulation();
 }
 
@@ -46,22 +39,6 @@ function onSpeedChange () {
   let speedCInput = Number.parseFloat(getById('speed-const').value);
   if (!isNaN(speedCInput)) params.speedC = speedCInput;
   simulation.params.speedC = params.speedC;
-}
-
-function onShowPathChange () {
-  // if show-path input changes don't reinitialize simulation
-  params.showPath = getById('show-path').checked;
-  simulation.params.showPath = params.showPath;
-}
-
-function onShowVelocityVectorsChange () {
-  params.showVelocityVectors = getById('show-v-vectors').checked;
-  simulation.params.showVelocityVectors = params.showVelocityVectors;
-}
-
-function onShowAccVectorsChange () {
-  params.showAccVectors = getById('show-a-vectors').checked;
-  simulation.params.showAccVectors = params.showAccVectors;
 }
 
 function startSimulation () {
