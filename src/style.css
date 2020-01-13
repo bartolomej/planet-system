@@ -17,7 +17,7 @@ select {
 input[type=number] {
     outline: none;
     border: 2px solid black;
-    border-radius: 3px;
+    border-radius: 5px;
     padding: 3px;
     width: 90%;
 }
@@ -64,16 +64,11 @@ button {
 #controls > div > input {
     font-size: 13px;
     padding: 5px;
+    transition: all 0.3s ease-in-out;
 }
 
-#controls > button {
-    width: 100%;
-    font-size: 15px;
-}
-
-#controls button:hover {
-    background: black;
-    color: white;
+#controls > div > input:focus {
+    color: red;
 }
 
 #open-menu {
@@ -131,7 +126,7 @@ button {
     padding: 8px 8px;
     border-radius: 50%;
     font-weight: bold;
-    margin-bottom: 8px;
+    margin-bottom: 15px;
     transition: all 0.5s ease-in-out;
     background: none;
     border: 2px solid transparent;
@@ -152,16 +147,6 @@ button {
 .selected {
     border: 2px solid black !important;
     transform: scale(1.1);
-}
-
-#zoom-container .round-controls-group {
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-}
-
-#zoom-container .round-controls-group:last-of-type {
-    margin-bottom: 0;
 }
 
 #zoom-container button:last-of-type {

@@ -31,33 +31,24 @@
     </div>
     <div>
         <label for="gravity-const">Gravitational constant</label>
-        <input id="gravity-const" step="0.0002" type="number"/>
+        <input id="gravity-const" step="0.00002" min="0.000001" type="number"/>
     </div>
     <div>
         <label for="speed-const">Simulation speed</label>
         <input id="speed-const" step="0.1" type="number"/>
     </div>
-    <button style="margin-top: 8px" id="start-simulation">GO!</button>
 </div>
 
 <button id="open-menu" style="padding: 8px; font-size: 13px">MENU</button>
 
 <div id="zoom-container">
-    <div class="round-controls-group">
-        <button id="show-path"><img src="orbit.svg"/></button>
-    </div>
-    <div class="round-controls-group">
-        <button id="show-v-vectors"><img style="transform: rotate(40deg)" src="arrow-v.svg"/></button>
-        <button id="show-a-vectors"><img style="transform: rotate(-40deg)" src="arrow-a.svg"/></button>
-    </div>
-    <div class="round-controls-group">
-        <button id="move-mode"><img src="move.svg"/></button>
-        <button id="create-mode"><img src="world.svg"/></button>
-    </div>
-    <div class="round-controls-group">
-        <button id="zoom-in"><img src="zoom-in.svg"/></button>
-        <button id="zoom-out"><img src="zoom-out.svg"/></button>
-    </div>
+    <button id="show-path"><img src="orbit.svg"/></button>
+    <button id="show-v-vectors"><img style="transform: rotate(40deg)" src="arrow-v.svg"/></button>
+    <button id="show-a-vectors"><img style="transform: rotate(-40deg)" src="arrow-a.svg"/></button>
+    <button id="move-mode"><img src="move.svg"/></button>
+    <button id="create-mode"><img src="world.svg"/></button>
+    <button id="zoom-in"><img src="zoom-in.svg"/></button>
+    <button id="zoom-out"><img src="zoom-out.svg"/></button>
 </div>
 
 <div id="container">

@@ -12,12 +12,11 @@ let params = {
 
 window.addEventListener('load', onLoad);
 getById('open-menu').addEventListener('click', openMenu);
-getById('start-simulation').addEventListener('click', startSimulation);
 
 // params input change events
-getById('gravity-const').addEventListener('input', onInputChange);
+getById('gravity-const').addEventListener('input', onGChange);
 getById('speed-const').addEventListener('input', onSpeedChange);
-getById('planets-count').addEventListener('input', onInputChange);
+getById('planets-count').addEventListener('input', onPlanetsChange);
 
 function onLoad () {
   openMenu();
@@ -25,12 +24,9 @@ function onLoad () {
   startSimulation();
 }
 
-function onInputChange () {
+function onPlanetsChange () {
   let planetsCInput = Number.parseFloat(getById('planets-count').value);
   if (!isNaN(planetsCInput)) params.planetsCount = planetsCInput;
-
-  let gravityCInput = Number.parseFloat(getById('gravity-const').value);
-  if (!isNaN(gravityCInput)) params.gravityC = gravityCInput;
 
   startSimulation();
 }
@@ -39,6 +35,12 @@ function onSpeedChange () {
   let speedCInput = Number.parseFloat(getById('speed-const').value);
   if (!isNaN(speedCInput)) params.speedC = speedCInput;
   simulation.params.speedC = params.speedC;
+}
+
+function onGChange () {
+  let gravityInput = Number.parseFloat(getById('gravity-const').value);
+  if (!isNaN(gravityInput)) params.gravityC = gravityInput;
+  simulation.params.gravityC = params.gravityC;
 }
 
 function startSimulation () {
