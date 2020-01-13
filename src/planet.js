@@ -28,7 +28,7 @@ export default class Planet {
     if (showPath) {
       ctx.beginPath();
       ctx.strokeStyle = "rgba(1, 1, 1, 0)";
-      ctx.fillStyle = this.color(0.6);
+      ctx.fillStyle = this.color(0.45);
       for (let position of this.path) {
         ctx.moveTo(position.x , position.y);
         ctx.arc(position.x, position.y, 2, 0, 2 * Math.PI);
