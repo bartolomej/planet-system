@@ -19,12 +19,14 @@ export default class Simulation {
     this._initViewElements();
     // translation state
     this.translate = { x: 0, y: 0 };
+    this.lockPosition = true;
+    this.alert = null;
     // zoom state
     this.isZoomingIn = false;
     this.isZoomingOut = false;
     // mouse state
     this.mouseDown = false;
-    this.lastDraw = { START: { x: 0, y: 0 }, END: { x: 0, y: 0} };
+    this.lastDraw = { START: { x: 0, y: 0 }, END: { x: 0, y: 0 } };
     this.lastMousePos = null;
     // canvas initialization
     this.canvas = document.getElementById('sketch');
@@ -40,6 +42,7 @@ export default class Simulation {
     addListener('zoom-out', 'mouseup', this._setZoomOut, this);
     addListener('create-mode', 'click', this._onPlanetCreate, this);
     addListener('move-mode', 'click', this._onMoveMode, this);
+    addListener('lock-position', 'click', this._onPositionLock, this);
     window.addEventListener('mousemove', this._onMouseMove.bind(this));
     window.addEventListener('resize', this._resizeCanvas.bind(this));
   }
@@ -71,7 +74,11 @@ export default class Simulation {
   _initViewElements () {
     let create = document.getElementById('create-mode');
     let move = document.getElementById('move-mode');
+    let lock = document.getElementById('lock-position');
 
+    if (!lock.classList.contains('selected')) {
+      lock.classList.add('selected');
+    }
     if (create.classList.contains('selected')) {
       create.classList.remove('selected');
     }
@@ -80,6 +87,11 @@ export default class Simulation {
     }
 
     document.getElementById('container').style.cursor = 'grab';
+  }
+
+  _onPositionLock () {
+    invertSelect('lock-position');
+    this.lockPosition = !this.lockPosition;
   }
 
   _onPlanetCreate () {
@@ -137,7 +149,7 @@ export default class Simulation {
         Math.random() * 10 + 5,
         new Vector(
           ((this.lastDraw.START.x - (this.canvas.width / 2)) / this._getScaleX()) + (-this.translate.x),
-        ((this.lastDraw.START.y - (this.canvas.height / 2)) / this._getScaleY()) + (-this.translate.y)
+          ((this.lastDraw.START.y - (this.canvas.height / 2)) / this._getScaleY()) + (-this.translate.y)
         ),
         new Vector(
           // scale down vector for better mouse drawing precision
@@ -149,12 +161,23 @@ export default class Simulation {
       document.getElementById('container').style.cursor = 'grab';
     }
     this.lastMousePos = null;
-    this.lastDraw = { START: { x: 0, y: 0 }, END: { x: 0, y: 0} }
+    this.lastDraw = { START: { x: 0, y: 0 }, END: { x: 0, y: 0 } }
   }
 
   _resizeCanvas () {
     this.canvas.width = window.innerWidth;
     this.canvas.height = window.innerHeight;
+  }
+
+  _calculateMassCenter () {
+    let avg = { x: 0, y: 0 };
+    for (let i = 0; i < this.planets.length; i++) {
+      avg.x += this.planets[i].position.x;
+      avg.y += this.planets[i].position.y;
+    }
+    avg.x = avg.x / this.planets.length;
+    avg.y = avg.y / this.planets.length;
+    return avg;
   }
 
   destroy () {
@@ -166,10 +189,10 @@ export default class Simulation {
     for (let i = 0; i < this.params.planetsCount; i++) {
       this.planets.push(new Planet(
         this.params,
-        Math.random() * 10 + 5,
+        Math.random() * 10 + 3,
         new Vector(
-          (Math.random() - 0.5) * this.spanX / 2,
-        (Math.random() - 0.5) * this.spanX / 2
+          (Math.random() - 0.5) * this.spanX / 3,
+          (Math.random() - 0.5) * this.spanX / 3
         )
       ))
     }
@@ -181,9 +204,14 @@ export default class Simulation {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.save();
 
-    this.ctx.translate(this.canvas.width/2, this.canvas.height/2);
+    this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
     this.ctx.scale(this._getScaleX(), this._getScaleY());
     this.ctx.translate(this.translate.x, this.translate.y);
+
+    if (this.lockPosition) {
+      const massCenter = this._calculateMassCenter();
+      this.ctx.translate(-massCenter.x, -massCenter.y);
+    }
 
     for (let i = 0; i < this.planets.length; i++) {
       let other = [...this.planets.slice(0, i - 1), ...this.planets.slice(i, this.planets.length)];
@@ -205,6 +233,15 @@ export default class Simulation {
     requestAnimationFrame(this._simulate.bind(this));
   }
 
+}
+
+function invertSelect (id) {
+  let ele = document.getElementById(id);
+  if (ele.classList.contains('selected')) {
+    ele.classList.remove('selected');
+  } else {
+    ele.classList.add('selected');
+  }
 }
 
 function unselect (id) {

@@ -42,6 +42,8 @@
 
 #intro-modal img {
     display: inline;
+    width: 15px;
+    margin: 0 5px;
 }
 
 #zoom-container {
