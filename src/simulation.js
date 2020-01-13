@@ -15,6 +15,7 @@ export default class Simulation {
     this.params = params;
     this.scale = 1;
     this.spanX = 500;
+    this.massCenter = null;
     this.showVelocityVectors = true;
     this.showAccVectors = false;
     this.showPath = true;
@@ -209,6 +210,16 @@ export default class Simulation {
   }
 
   _simulate () {
+    // calculate mass center
+    const massCenter = this._calculateMassCenter();
+    if (this.massCenter) {
+      const massCenterDx = this.massCenter.x - massCenter.x;
+      const massCenterDy = this.massCenter.y - massCenter.y;
+      this.translate.x += massCenterDx;
+      this.translate.y += massCenterDy;
+    }
+    this.massCenter = massCenter;
+
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.ctx.save();
@@ -216,9 +227,6 @@ export default class Simulation {
     this.ctx.translate(this.canvas.width / 2, this.canvas.height / 2);
     this.ctx.scale(this._getScaleX(), this._getScaleY());
     this.ctx.translate(this.translate.x, this.translate.y);
-
-    const massCenter = this._calculateMassCenter();
-    this.ctx.translate(-massCenter.x, -massCenter.y);
 
     for (let i = 0; i < this.planets.length; i++) {
       let other = [...this.planets.slice(0, i - 1), ...this.planets.slice(i, this.planets.length)];
