@@ -41,14 +41,18 @@
 
 <button id="open-menu" style="padding: 8px; font-size: 13px">MENU</button>
 
-<div id="zoom-container">
-    <button id="show-path"><img src="orbit.svg"/></button>
-    <button id="show-v-vectors"><img style="transform: rotate(40deg)" src="arrow-v.svg"/></button>
-    <button id="show-a-vectors"><img style="transform: rotate(-40deg)" src="arrow-a.svg"/></button>
-    <button id="move-mode"><img src="move.svg"/></button>
-    <button id="create-mode"><img src="world.svg"/></button>
-    <button id="zoom-in"><img src="zoom-in.svg"/></button>
-    <button id="zoom-out"><img src="zoom-out.svg"/></button>
+<div id="btn-container">
+    <button id="show-path"><object type="image/svg+xml" data="orbit.svg"></object></button>
+    <button id="show-v-vectors"><object type="image/svg+xml" data="arrow-v.svg"></object></button>
+    <button id="show-a-vectors"><object type="image/svg+xml" data="arrow-a.svg"></object></button>
+    <div class="btn-group">
+        <button id="move-mode"><object type="image/svg+xml" data="move.svg"></object></button>
+        <button id="create-mode"><object type="image/svg+xml" data="world.svg"></object></button>
+    </div>
+    <div class="btn-group">
+        <button id="zoom-in"><object type="image/svg+xml" data="zoom-in.svg"></object></button>
+        <button id="zoom-out"><object type="image/svg+xml" data="zoom-out.svg"></object></button>
+    </div>
 </div>
 
 <div id="container">
@@ -61,10 +65,9 @@
         <h2>🌔 Quick tutorial 🌎</h2>
         <ul>
             <li>Show planet path <img src="orbit.svg"/></li>
-            <li>Show velocity vectors <img style="transform: rotate(40deg)" src="arrow-v.svg"/></li>
-            <li>Show acceleration vectors <img style="transform: rotate(-40deg)" src="arrow-a.svg"/></li>
-            <li>Toggle to move around with your mouse <img src="move.svg"/></li>
-            <li>Toggle to new planets with initial speed vector <img src="world.svg"/></li>
+            <li>Show velocity vectors <img src="arrow-v.svg"/></li>
+            <li>Show acceleration vectors <img src="arrow-a.svg"/></li>
+            <li>Switch between <img src="move.svg"/> or <img src="world.svg"/> to move around or create planets</li>
             <li>Click <img src="zoom-in.svg"/> or <img src="zoom-out.svg"/> for zoom</li>
         </ul>
     </div>
