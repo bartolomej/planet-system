@@ -65,6 +65,7 @@ function openMenu () {
   $("#intro-modal").modal({
     fadeDuration: 100
   });
+  document.getElementById('btn-container').classList.add('animate-in');
 }
 
 function getById (id) {

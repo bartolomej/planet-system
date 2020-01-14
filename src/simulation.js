@@ -47,6 +47,15 @@ export default class Simulation {
     addListener('show-path', 'click', this._onShowPath, this);
     addListener('show-v-vectors', 'click', this._onShowVVectors, this);
     addListener('show-a-vectors', 'click', this._onShowAVectors, this);
+    // register info message listeners
+    Info.register('Zoom in', 'zoom-in');
+    Info.register('Zoom out', 'zoom-out');
+    Info.register('Create planets', 'create-mode');
+    Info.register('Move around', 'move-mode');
+    Info.register('Show planet path', 'show-path');
+    Info.register('Show velocity vectors', 'show-v-vectors');
+    Info.register('Show acceleration vectors', 'show-a-vectors');
+    // global mouse events
     window.addEventListener('mousemove', this._onMouseMove.bind(this));
     window.addEventListener('resize', this._resizeCanvas.bind(this));
   }
@@ -60,22 +69,22 @@ export default class Simulation {
   }
 
   _onShowPath (e) {
-    invertSelect('show-path');
+    invertSelect('show-path', '#235bce');
     this.showPath = !this.showPath;
   }
 
   _onShowVVectors () {
-    invertSelect('show-v-vectors');
+    invertSelect('show-v-vectors', 'red');
     this.showVelocityVectors = !this.showVelocityVectors;
   }
 
   _onShowAVectors () {
-    invertSelect('show-a-vectors');
+    invertSelect('show-a-vectors', 'blue');
     this.showAccVectors = !this.showAccVectors;
   }
 
   _onPlanetCreate () {
-    select('create-mode');
+    select('create-mode', '#235bce');
     unselect('move-mode');
     document.getElementById('container').style.cursor = 'crosshair';
     this.editMode = EDIT_MODES.CREATE_PLANETS;
@@ -83,7 +92,7 @@ export default class Simulation {
 
   _onMoveMode () {
     unselect('create-mode');
-    select('move-mode');
+    select('move-mode', '#235bce');
     document.getElementById('container').style.cursor = 'grab';
     this.editMode = EDIT_MODES.MOVE;
   }
@@ -133,8 +142,8 @@ export default class Simulation {
         ),
         new Vector(
           // scale down vector for better mouse drawing precision
-          (this.lastDraw.END.x - this.lastDraw.START.x),
-          (this.lastDraw.END.y - this.lastDraw.START.y)
+          (this.lastDraw.END.x - this.lastDraw.START.x) / 3,
+          (this.lastDraw.END.y - this.lastDraw.START.y) / 3
         ),
       ));
     } else if (this.editMode === EDIT_MODES.MOVE) {
@@ -145,23 +154,9 @@ export default class Simulation {
   }
 
   _initViewElements () {
-    let create = document.getElementById('create-mode');
-    let move = document.getElementById('move-mode');
-    let showPath = document.getElementById('show-path');
-    let showVVectors = document.getElementById('show-v-vectors');
-
-    if (!showVVectors.classList.contains('selected')) {
-      showVVectors.classList.add('selected');
-    }
-    if (!showPath.classList.contains('selected')) {
-      showPath.classList.add('selected');
-    }
-    if (create.classList.contains('selected')) {
-      create.classList.remove('selected');
-    }
-    if (!move.classList.contains('selected')) {
-      move.classList.add('selected')
-    }
+    select('move-mode', '#235bce');
+    select('show-path', '#235bce');
+    select('show-v-vectors', 'red');
 
     document.getElementById('container').style.cursor = 'grab';
   }
@@ -275,8 +270,14 @@ export default class Simulation {
 
 }
 
-function invertSelect (id) {
+function invertSelect (id, color) {
   let ele = document.getElementById(id);
+  let svg = getSvgChild(ele);
+  if (svg.style.fill === '') {
+    svg.style.fill = color;
+  } else {
+    svg.style.fill = '';
+  }
   if (ele.classList.contains('selected')) {
     ele.classList.remove('selected');
   } else {
@@ -286,18 +287,85 @@ function invertSelect (id) {
 
 function unselect (id) {
   let ele = document.getElementById(id);
+  let svg = getSvgChild(ele);
+  if (svg.style.fill !== '') {
+    svg.style.fill = '';
+  }
   if (ele.classList.contains('selected')) {
     ele.classList.remove('selected');
   }
 }
 
-function select (id) {
+function select (id, color) {
   let ele = document.getElementById(id);
+  let svg = getSvgChild(ele);
+  if (svg.style.fill === '') {
+    svg.style.fill = color;
+  }
   if (!ele.classList.contains('selected')) {
     ele.classList.add('selected');
   }
 }
 
+function getSvgChild (object) {
+  let children = object.childNodes[0].contentDocument.children;
+  for (let child of children) {
+    if (child.tagName === 'svg') return child;
+  }
+}
+
 function addListener (id, event, func, bind) {
   document.getElementById(id).addEventListener(event, func.bind(bind));
+}
+
+class Info {
+
+  constructor (message, target) {
+    this.message = message;
+    this.target = target;
+    this.element = null;
+    this.target.addEventListener('mouseleave', this.onMouseLeave.bind(this));
+    this.target.addEventListener('mouseover', this.onMouseOver.bind(this));
+    this.createElement();
+  }
+
+  static register (message, id) {
+    let ele = document.getElementById(id);
+    return new Info(message, ele);
+  }
+
+  createElement () {
+    let pos = this.target.getBoundingClientRect();
+    const container = document.createElement('div');
+
+    container.classList.add('message');
+    container.innerText = this.message;
+
+    container.style.zIndex = '-1';
+    container.style.position = 'absolute';
+    container.style.top = (pos.top + 10) + 'px';
+    container.style.left = (pos.left - 170) + 'px';
+    container.style.width = '100px';
+    container.style.color = 'black';
+
+    if (!this.element) {
+      document.body.appendChild(container);
+      this.element = container;
+    }
+  }
+
+  onMouseOver () {
+    this.element.classList.add('message-in');
+  }
+
+  destroy () {
+    document.body.removeChild(this.element);
+  }
+
+  onMouseLeave () {
+    setTimeout(() => {
+      this.element.classList.remove('message-in');
+    }, 250);
+  }
+
 }

@@ -114,41 +114,86 @@ button {
 
 /** BOTTOM BUTTONS **/
 
-#zoom-container {
+
+
+#btn-container {
     position: absolute;
     bottom: 10px;
     right: 10px;
     display: flex;
     flex-direction: column;
+    transition: all 1s ease-in-out;
+    transform: translateX(140%);
 }
 
-#zoom-container button {
+#btn-container button {
     padding: 8px 8px;
     border-radius: 50%;
     font-weight: bold;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     transition: all 0.5s ease-in-out;
     background: none;
     border: 2px solid transparent;
+    z-index: 10;
 }
 
-#zoom-container button:active {
+#btn-container button:active {
     transform: scale(1.1) !important;
 }
 
-#zoom-container img {
+#btn-container object {
     width: 25px;
+    z-index: -1;
+    pointer-events: none;
 }
 
-#zoom-container button:hover {
-    transform: rotate(360deg);
+#btn-container object:hover {
+    cursor: pointer;
+}
+
+
+#btn-container button:hover {
+    transform: scale(1.2);
+}
+
+#btn-container div:last-of-type {
+    margin-bottom: 0;
+}
+
+.animate-in {
+    transform: translateX(0) !important;
 }
 
 .selected {
-    border: 2px solid black !important;
     transform: scale(1.1);
 }
 
-#zoom-container button:last-of-type {
-    margin-bottom: 0;
+.selected svg {
+    fill: red;
+}
+
+.btn-group {
+    border: 2px dashed black;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.btn-group button {
+    margin: 0 !important;
+}
+
+
+/** MESSAGE **/
+
+.message {
+    transition: all 0.3s ease-in-out;
+    transform: translateX(50%);
+    opacity: 0;
+}
+
+.message-in {
+    transform: translateX(0);
+    opacity: 1;
 }
